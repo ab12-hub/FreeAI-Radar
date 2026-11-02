@@ -1,0 +1,30 @@
+appId: com.freeairadar.app
+productName: FreeAI Radar
+copyright: Copyright © 2026 FreeAI Radar Contributors
+
+directories:
+  output: dist
+  buildResources: build
+
+files:
+  - src/**/*
+  - package.json
+  - "!**/*.map"
+  - "!data/**"
+  - "!dist/**"
+
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: zip
+      arch: [x64]
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: FreeAI Radar
+  artifactName: FreeAI-Radar-Setup-${version}.${ext}

@@ -1,0 +1,23 @@
+{
+  "name": "freeai-radar",
+  "version": "1.0.0",
+  "description": "FreeAI Radar —— AI 大模型免费渠道实时雷达：聚合、监控、推送可免费使用的 AI API 渠道（桌面客户端 + Web 端）",
+  "main": "src/main/main.js",
+  "author": "FreeAI Radar Contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/ab12-hub/FreeAI-Radar",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "server": "node src/main/dev-server.js",
+    "icon": "node scripts/gen-icon.js",
+    "dist": "electron-builder --win"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreeAI Radar · AI免费渠道雷达</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">📡</span>
+      <div>
+        <h1>FreeAI Radar <em>AI 免费渠道雷达</em></h1>
+        <p class="sub">实时监控 · 可信来源 · 本地存储</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span id="status-pill" class="pill" title="自动轮询倒计时">…</span>
+      <button id="btn-refresh" class="btn primary" title="立即抓取所有监控源">⟳ 立即刷新</button>
+      <button id="btn-check" class="btn ghost" title="探测所有渠道入口可达性">🩺 一键体检</button>
+      <button id="btn-settings" class="btn ghost" title="设置">⚙ 设置</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="channels">🧭 渠道广场</button>
+    <button class="tab" data-tab="feed">⚡ 实时推送流 <span id="feed-badge" class="badge hidden">0</span></button>
+    <button class="tab" data-tab="health">🩺 健康状态</button>
+    <button class="tab" data-tab="about">ℹ️ 关于</button>
+  </nav>
+
+  <main>
+    <!-- 渠道广场 -->
+    <section id="tab-channels" class="panel active">
+      <div class="filters">
+        <input id="f-search" type="search" placeholder="搜索渠道 / 厂商 / 模型…" />
+        <select id="f-category">
+          <option value="">全部类型</option>
+          <option value="official">官方免费层</option>
+          <option value="credit">注册送额度</option>
+          <option value="keyless">无需密钥</option>
+          <option value="community">社区网关</option>
+        </select>
+        <select id="f-region">
+          <option value="">全部地区</option>
+          <option value="intl">国际</option>
+          <option value="cn">国内</option>
+        </select>
+        <select id="f-keyless">
+          <option value="">注册与否不限</option>
+          <option value="yes">免注册直接用</option>
+          <option value="no">需注册领取</option>
+        </select>
+        <select id="f-trust">
+          <option value="">全部来源</option>
+          <option value="official">官方来源</option>
+          <option value="community">社区来源</option>
+        </select>
+        <select id="f-sort">
+          <option value="default">默认排序</option>
+          <option value="status">可达优先</option>
+          <option value="name">名称 A-Z</option>
+        </select>
+        <span id="ch-count" class="count"></span>
+      </div>
+      <div id="channel-grid" class="grid"></div>
+    </section>
+
+    <!-- 推送流 -->
+    <section id="tab-feed" class="panel">
+      <div class="feed-head">
+        <p class="muted">监控源变更与系统事件的实时时间线（SSE 推送，无需手动刷新）。</p>
+        <button id="btn-clear-local" class="btn ghost small" hidden>清空本地未读</button>
+      </div>
+      <ul id="event-list" class="timeline"></ul>
+    </section>
+
+    <!-- 健康状态 -->
+    <section id="tab-health" class="panel">
+      <div class="health-summary" id="health-summary"></div>
+      <table class="health-table">
+        <thead>
+          <tr><th>渠道</th><th>探测地址</th><th>状态</th><th>延迟</th><th>最近检测</th><th>说明</th></tr>
+        </thead>
+        <tbody id="health-body"></tbody>
+      </table>
+      <p class="muted small-note">* 探测只验证入口可达性（HTTP 有响应即视为服务存活），不使用任何密钥；结果基于本机网络环境，仅供参考。</p>
+    </section>
+
+    <!-- 关于 -->
+    <section id="tab-about" class="panel about">
+      <h2>FreeAI Radar <span id="about-version" class="muted"></span></h2>
+      <p>一个完全本地运行的 AI 大模型免费渠道雷达：持续监控公开、可溯源的免费渠道情报源，
+        把「哪里能免费、合法地用上大模型」实时推送到你的桌面。软件只聚合<b>渠道信息</b>（官方免费层、注册送额度、免密钥公开接口、高信誉社区网关），
+        <b>不收集、不分发任何第三方私密 API Key</b>。</p>
+      <h3>监控情报源</h3>
+      <ul id="about-sources" class="source-list"></ul>
+      <h3>使用建议</h3>
+      <ul>
+        <li>点击渠道卡片上的「注册链接」到官方页面亲手领取 Key，切勿使用来路不明的他人密钥。</li>
+        <li>「社区网关」类服务随时可能变动，仅供学习测试；正式项目请使用官方渠道。</li>
+        <li>在「设置」中填入 GitHub Token 可把监控频率提升到每 5 分钟一次（未认证限额 60 次/小时）。</li>
+      </ul>
+      <h3>免责声明</h3>
+      <p class="muted">本软件仅聚合公开渠道信息并提供来源链接，不存储任何密钥；所有服务的额度与条款以官方页面为准，
+        请遵守各服务商服务条款。信息按"现状"提供，不作任何担保。使用本软件产生的一切行为由使用者自行负责。</p>
+      <h3>隐私</h3>
+      <p class="muted">所有数据仅保存在本机数据目录，不上传任何服务器。数据目录：<code id="about-datadir">…</code></p>
+    </section>
+  </main>
+
+  <!-- 设置弹窗 -->
+  <div id="modal-settings" class="modal hidden">
+    <div class="modal-box">
+      <div class="modal-head"><h2>⚙ 设置</h2><button id="btn-close-settings" class="icon-btn">✕</button></div>
+      <div class="modal-body">
+        <label>轮询间隔（分钟，5-720）<input id="s-interval" type="number" min="5" max="720" /></label>
+        <label>GitHub Token（可选，提升 API 限额）<input id="s-token" type="password" placeholder="ghp_… / gho_…" autocomplete="off" /></label>
+        <label>Web 端端口（重启后生效）<input id="s-port" type="number" min="1024" max="65535" /></label>
+        <label class="check"><input id="s-lan" type="checkbox" /> 允许局域网设备访问 Web 端（重启后生效）</label>
+        <label class="check"><input id="s-notify" type="checkbox" /> 桌面推送通知（新渠道 / 源更新时弹通知）</label>
+        <label class="check"><input id="s-autolaunch" type="checkbox" /> 开机自启</label>
+        <label class="check"><input id="s-closetray" type="checkbox" /> 关闭窗口时最小化到托盘</label>
+        <label>自定义监控仓库（每行一个，格式 owner/repo）<textarea id="s-custom" rows="3" placeholder="例如：some-user/some-awesome-list"></textarea></label>
+        <div class="row-gap">
+          <button id="btn-export" class="btn ghost">⬇ 导出全部数据 (JSON)</button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <span id="settings-hint" class="muted"></span>
+        <button id="btn-save-settings" class="btn primary">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+  <footer class="foot">FreeAI Radar · 数据仅存本地 · 来源可溯源 · 仅供学习研究 · <a href="#" id="foot-repo">GitHub</a></footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
